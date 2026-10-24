@@ -1,9 +1,8 @@
 # junk2
 
 ```
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-Invoke-WebRequest https://<real-alias>/captain/api/health/ready -UseBasicParsing | Select-Object StatusCode, Content
-
+Get-ChildItem C:\inetpub\logs\LogFiles\W3SVC1 | Sort-Object LastWriteTime | Select-Object -Last 1 |
+  Get-Content -Tail 50 | Select-String '/captain'
 
 
 ```
