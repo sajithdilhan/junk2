@@ -1,8 +1,14 @@
 # junk2
 
 ```
-Get-ChildItem C:\inetpub\logs\LogFiles\W3SVC1 | Sort-Object LastWriteTime | Select-Object -Last 1 |
-  Get-Content -Tail 50 | Select-String '/captain'
+Get-WebGlobalModule | Where-Object Name -match 'Rewrite|ApplicationRequestRouting' | Select-Object Name
+
+$files = @("$env:windir\System32\inetsrv\config\applicationHost.config") +
+  (& "$env:windir\System32\inetsrv\appcmd.exe" list vdir /text:physicalPath |
+    ForEach-Object { [Environment]::ExpandEnvironmentVariables($_) } | Sort-Object -Unique |
+    ForEach-Object { Get-ChildItem $_ -Recurse -Filter web.config -ErrorAction SilentlyContinue } |
+    ForEach-Object FullName)
+$files | Select-String -Pattern 'url="https?://' | Format-Table Path, LineNumber, Line -AutoSize -Wrap
 
 
 ```
